@@ -1,9 +1,8 @@
-
 package user;
 
-import com.sun.jdi.connect.spi.Connection;
-import java.sql.SQLException;
-import java.sql.DriverManager;
+import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -21,11 +20,11 @@ public class UserView extends javax.swing.JFrame {
     /**
      * Creates new form user_view
      */
-//    
-//    public static final String URL = "jdbc:mysql://localhost:3306/Recetario";
-//    public static final String USERNAME = "root";
-//    public static final String PASSWORD = "aex1lol";
-    
+    public static final String URL = "jdbc:mysql://localhost:3306/Recetario";
+    public static final String USERNAME = "root";
+    public static final String PASSWORD = "aex1lol";
+    static Connection conn = null;
+
     public void resizeImages() {
         ScaleImage resize = new ScaleImage();
         // Boton Hamburguesa para las opciones
@@ -36,21 +35,69 @@ public class UserView extends javax.swing.JFrame {
 
         resize.scaleImage(burgerButton, this.burgerButton);
         resize.scaleImage(userIcon, this.userIcon);
-        resize.scaleImage(foodThumbnail, this.foodThumbnail);
+        //resize.scaleImage(foodThumbnail, this.foodThumbnail);
     }
 
-    public void invokeRecipe(FoodView food) {
-        food = new FoodView();
-        food.setVisible(true);
-        dispose();
+    public void showRecipes() {
+        /*
+        260, 240 Tamaño fijo,   40px de distancia   
+        1.-  60-320, 140
+         */
+        int x = 60;
+        int y = 140;
+        int i = 1;
+
+        try {
+            conn = getConection();
+
+            PreparedStatement ps;
+            ResultSet res;
+            ps = conn.prepareStatement("SELECT * FROM Receta");
+            res = ps.executeQuery();
+
+            while (res.next()) {
+                
+                JPanel foodCard1 = new JPanel();
+                JLabel foodThumbnail1 = new JLabel();
+
+                foodCard1.setBackground(new java.awt.Color(200, 200, 200));
+                foodThumbnail1.setText(res.getString("id") + " " + res.getString("nombre") + " " + res.getString("categoria"));
+                foodCard1.add(foodThumbnail1);
+                //  x    y
+                foodCard1.setBounds(x, y, 260, 240);
+
+                Body.add(foodCard1);
+                invalidate();
+                validate();
+                repaint();
+
+                if(i%3 == 0){
+                    y+= 270;
+                    x = 60;
+                }else{
+                    x += 290;
+                }
+                i++;
+
+//                FoodView food = new FoodView();
+//                food.setVisible(true);
+//                dispose();
+                //JOptionPane.showMessageDialog(null, res.getString("id")+ " "+res.getString("nombre")+ " "+res.getString("categoria"));
+            } //else {
+//                JOptionPane.showMessageDialog(null, "No existen datos");
+//            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(UserView.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public UserView() {
-        
         initComponents();
         setLocationRelativeTo(this);
         setResizable(false);
         resizeImages();
+        showRecipes();
     }
 
     /**
@@ -68,42 +115,6 @@ public class UserView extends javax.swing.JFrame {
         jTextField1 = new javax.swing.JTextField();
         burgerButton = new javax.swing.JLabel();
         userIcon = new javax.swing.JLabel();
-        foodCard = new javax.swing.JPanel();
-        foodThumbnail = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
-        foodCard2 = new javax.swing.JPanel();
-        foodThumbnail2 = new javax.swing.JLabel();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        jTextArea3 = new javax.swing.JTextArea();
-        foodCard4 = new javax.swing.JPanel();
-        foodThumbnail4 = new javax.swing.JLabel();
-        jScrollPane6 = new javax.swing.JScrollPane();
-        jTextArea5 = new javax.swing.JTextArea();
-        foodCard5 = new javax.swing.JPanel();
-        foodThumbnail5 = new javax.swing.JLabel();
-        jScrollPane7 = new javax.swing.JScrollPane();
-        jTextArea6 = new javax.swing.JTextArea();
-        foodCard6 = new javax.swing.JPanel();
-        foodThumbnail6 = new javax.swing.JLabel();
-        jScrollPane8 = new javax.swing.JScrollPane();
-        jTextArea7 = new javax.swing.JTextArea();
-        foodCard7 = new javax.swing.JPanel();
-        foodThumbnail7 = new javax.swing.JLabel();
-        jScrollPane9 = new javax.swing.JScrollPane();
-        jTextArea8 = new javax.swing.JTextArea();
-        foodCard8 = new javax.swing.JPanel();
-        foodThumbnail8 = new javax.swing.JLabel();
-        jScrollPane10 = new javax.swing.JScrollPane();
-        jTextArea9 = new javax.swing.JTextArea();
-        foodCard9 = new javax.swing.JPanel();
-        foodThumbnail9 = new javax.swing.JLabel();
-        jScrollPane11 = new javax.swing.JScrollPane();
-        jTextArea10 = new javax.swing.JTextArea();
-        foodCard10 = new javax.swing.JPanel();
-        foodThumbnail10 = new javax.swing.JLabel();
-        jScrollPane12 = new javax.swing.JScrollPane();
-        jTextArea11 = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -144,295 +155,17 @@ public class UserView extends javax.swing.JFrame {
                 .addContainerGap(23, Short.MAX_VALUE))
         );
 
-        foodCard.setBackground(new java.awt.Color(102, 102, 102));
-
-        foodThumbnail.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                foodThumbnailMouseClicked(evt);
-            }
-        });
-
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jTextArea1.setText("\nLorem Ipsum Dolor");
-        jTextArea1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTextArea1MouseClicked(evt);
-            }
-        });
-        jScrollPane2.setViewportView(jTextArea1);
-
-        javax.swing.GroupLayout foodCardLayout = new javax.swing.GroupLayout(foodCard);
-        foodCard.setLayout(foodCardLayout);
-        foodCardLayout.setHorizontalGroup(
-            foodCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(foodThumbnail, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
-        );
-        foodCardLayout.setVerticalGroup(
-            foodCardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(foodCardLayout.createSequentialGroup()
-                .addComponent(foodThumbnail, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0))
-        );
-
-        foodCard2.setBackground(new java.awt.Color(102, 102, 102));
-
-        jTextArea3.setColumns(20);
-        jTextArea3.setRows(5);
-        jTextArea3.setText("\nLorem Ipsum Dolor");
-        jScrollPane4.setViewportView(jTextArea3);
-
-        javax.swing.GroupLayout foodCard2Layout = new javax.swing.GroupLayout(foodCard2);
-        foodCard2.setLayout(foodCard2Layout);
-        foodCard2Layout.setHorizontalGroup(
-            foodCard2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(foodThumbnail2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
-        );
-        foodCard2Layout.setVerticalGroup(
-            foodCard2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(foodCard2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(foodThumbnail2, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0))
-        );
-
-        foodCard4.setBackground(new java.awt.Color(102, 102, 102));
-
-        jTextArea5.setColumns(20);
-        jTextArea5.setRows(5);
-        jTextArea5.setText("\nLorem Ipsum Dolor");
-        jScrollPane6.setViewportView(jTextArea5);
-
-        javax.swing.GroupLayout foodCard4Layout = new javax.swing.GroupLayout(foodCard4);
-        foodCard4.setLayout(foodCard4Layout);
-        foodCard4Layout.setHorizontalGroup(
-            foodCard4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(foodThumbnail4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
-        );
-        foodCard4Layout.setVerticalGroup(
-            foodCard4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(foodCard4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(foodThumbnail4, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0))
-        );
-
-        foodCard5.setBackground(new java.awt.Color(102, 102, 102));
-
-        jTextArea6.setColumns(20);
-        jTextArea6.setRows(5);
-        jTextArea6.setText("\nLorem Ipsum Dolor");
-        jScrollPane7.setViewportView(jTextArea6);
-
-        javax.swing.GroupLayout foodCard5Layout = new javax.swing.GroupLayout(foodCard5);
-        foodCard5.setLayout(foodCard5Layout);
-        foodCard5Layout.setHorizontalGroup(
-            foodCard5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(foodThumbnail5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jScrollPane7, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
-        );
-        foodCard5Layout.setVerticalGroup(
-            foodCard5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(foodCard5Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(foodThumbnail5, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0))
-        );
-
-        foodCard6.setBackground(new java.awt.Color(102, 102, 102));
-
-        jTextArea7.setColumns(20);
-        jTextArea7.setRows(5);
-        jTextArea7.setText("\nLorem Ipsum Dolor");
-        jScrollPane8.setViewportView(jTextArea7);
-
-        javax.swing.GroupLayout foodCard6Layout = new javax.swing.GroupLayout(foodCard6);
-        foodCard6.setLayout(foodCard6Layout);
-        foodCard6Layout.setHorizontalGroup(
-            foodCard6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(foodThumbnail6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
-        );
-        foodCard6Layout.setVerticalGroup(
-            foodCard6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(foodCard6Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(foodThumbnail6, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0))
-        );
-
-        foodCard7.setBackground(new java.awt.Color(102, 102, 102));
-
-        jTextArea8.setColumns(20);
-        jTextArea8.setRows(5);
-        jTextArea8.setText("\nLorem Ipsum Dolor");
-        jScrollPane9.setViewportView(jTextArea8);
-
-        javax.swing.GroupLayout foodCard7Layout = new javax.swing.GroupLayout(foodCard7);
-        foodCard7.setLayout(foodCard7Layout);
-        foodCard7Layout.setHorizontalGroup(
-            foodCard7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(foodThumbnail7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jScrollPane9, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
-        );
-        foodCard7Layout.setVerticalGroup(
-            foodCard7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(foodCard7Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(foodThumbnail7, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0))
-        );
-
-        foodCard8.setBackground(new java.awt.Color(102, 102, 102));
-
-        jTextArea9.setColumns(20);
-        jTextArea9.setRows(5);
-        jTextArea9.setText("\nLorem Ipsum Dolor");
-        jScrollPane10.setViewportView(jTextArea9);
-
-        javax.swing.GroupLayout foodCard8Layout = new javax.swing.GroupLayout(foodCard8);
-        foodCard8.setLayout(foodCard8Layout);
-        foodCard8Layout.setHorizontalGroup(
-            foodCard8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(foodThumbnail8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jScrollPane10, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
-        );
-        foodCard8Layout.setVerticalGroup(
-            foodCard8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(foodCard8Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(foodThumbnail8, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(jScrollPane10, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0))
-        );
-
-        foodCard9.setBackground(new java.awt.Color(102, 102, 102));
-
-        jTextArea10.setColumns(20);
-        jTextArea10.setRows(5);
-        jTextArea10.setText("\nLorem Ipsum Dolor");
-        jScrollPane11.setViewportView(jTextArea10);
-
-        javax.swing.GroupLayout foodCard9Layout = new javax.swing.GroupLayout(foodCard9);
-        foodCard9.setLayout(foodCard9Layout);
-        foodCard9Layout.setHorizontalGroup(
-            foodCard9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(foodThumbnail9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jScrollPane11, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
-        );
-        foodCard9Layout.setVerticalGroup(
-            foodCard9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(foodCard9Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(foodThumbnail9, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(jScrollPane11, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0))
-        );
-
-        foodCard10.setBackground(new java.awt.Color(102, 102, 102));
-
-        jTextArea11.setColumns(20);
-        jTextArea11.setRows(5);
-        jTextArea11.setText("\nLorem Ipsum Dolor");
-        jScrollPane12.setViewportView(jTextArea11);
-
-        javax.swing.GroupLayout foodCard10Layout = new javax.swing.GroupLayout(foodCard10);
-        foodCard10.setLayout(foodCard10Layout);
-        foodCard10Layout.setHorizontalGroup(
-            foodCard10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(foodThumbnail10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jScrollPane12, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
-        );
-        foodCard10Layout.setVerticalGroup(
-            foodCard10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(foodCard10Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(foodThumbnail10, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(jScrollPane12, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0))
-        );
-
         javax.swing.GroupLayout BodyLayout = new javax.swing.GroupLayout(Body);
         Body.setLayout(BodyLayout);
         BodyLayout.setHorizontalGroup(
             BodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(Header, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(BodyLayout.createSequentialGroup()
-                .addGap(61, 61, 61)
-                .addGroup(BodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(BodyLayout.createSequentialGroup()
-                        .addComponent(foodCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(25, 25, 25)
-                        .addComponent(foodCard2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(27, 27, 27)
-                        .addComponent(foodCard4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(BodyLayout.createSequentialGroup()
-                        .addComponent(foodCard6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(25, 25, 25)
-                        .addComponent(foodCard5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(27, 27, 27)
-                        .addComponent(foodCard7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(BodyLayout.createSequentialGroup()
-                        .addComponent(foodCard10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(25, 25, 25)
-                        .addComponent(foodCard8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(27, 27, 27)
-                        .addComponent(foodCard9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         BodyLayout.setVerticalGroup(
             BodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(BodyLayout.createSequentialGroup()
                 .addComponent(Header, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(BodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(BodyLayout.createSequentialGroup()
-                        .addGap(51, 51, 51)
-                        .addComponent(foodCard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(BodyLayout.createSequentialGroup()
-                        .addGap(49, 49, 49)
-                        .addComponent(foodCard2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(BodyLayout.createSequentialGroup()
-                        .addGap(49, 49, 49)
-                        .addComponent(foodCard4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGroup(BodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(BodyLayout.createSequentialGroup()
-                        .addGap(48, 48, 48)
-                        .addComponent(foodCard6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(BodyLayout.createSequentialGroup()
-                        .addGap(49, 49, 49)
-                        .addComponent(foodCard5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(BodyLayout.createSequentialGroup()
-                        .addGap(49, 49, 49)
-                        .addComponent(foodCard7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGroup(BodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(BodyLayout.createSequentialGroup()
-                        .addGap(48, 48, 48)
-                        .addComponent(foodCard10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(BodyLayout.createSequentialGroup()
-                        .addGap(49, 49, 49)
-                        .addComponent(foodCard8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(BodyLayout.createSequentialGroup()
-                        .addGap(49, 49, 49)
-                        .addComponent(foodCard9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(857, Short.MAX_VALUE))
         );
 
         jScrollPane1.setViewportView(Body);
@@ -443,28 +176,21 @@ public class UserView extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void foodThumbnailMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_foodThumbnailMouseClicked
-        
-    }//GEN-LAST:event_foodThumbnailMouseClicked
+    public static Connection getConection() {
+        // Objeto para la conexion
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            conn = (Connection) DriverManager.getConnection(URL, USERNAME, PASSWORD);
+            //JOptionPane.showMessageDialog(null, "Conexión exitosa");
 
-    private void jTextArea1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTextArea1MouseClicked
-        
-    }//GEN-LAST:event_jTextArea1MouseClicked
+        } catch (ClassNotFoundException e) {
+            System.out.println("Ocurre una ClassNotFoundException: " + e.getMessage());
+        } catch (SQLException e) {
+            System.out.println("Ocurre una SQLException: " + e.getMessage());
+        }
+        return conn;
+    }
 
-//    public static Connection getConection(){
-//        // Objeto para la conexion
-//        Connection conn = null;
-//        try{
-//            Class.forName("com.mysql.jdbc.Driver");
-//            conn = (Connection) DriverManager.getConnection(URL, USERNAME, PASSWORD);
-//            JOptionPane.showMessageDialog(null,"Conexión exitosa");
-//            
-//        }catch(Exception e){
-//            System.out.println(e);
-//        }
-//        return null;
-//        
-//    }
     /**
      * @param args the command line arguments
      */
@@ -505,43 +231,7 @@ public class UserView extends javax.swing.JFrame {
     private javax.swing.JPanel Body;
     private javax.swing.JPanel Header;
     public javax.swing.JLabel burgerButton;
-    private javax.swing.JPanel foodCard;
-    private javax.swing.JPanel foodCard10;
-    private javax.swing.JPanel foodCard2;
-    private javax.swing.JPanel foodCard4;
-    private javax.swing.JPanel foodCard5;
-    private javax.swing.JPanel foodCard6;
-    private javax.swing.JPanel foodCard7;
-    private javax.swing.JPanel foodCard8;
-    private javax.swing.JPanel foodCard9;
-    private javax.swing.JLabel foodThumbnail;
-    private javax.swing.JLabel foodThumbnail10;
-    private javax.swing.JLabel foodThumbnail2;
-    private javax.swing.JLabel foodThumbnail4;
-    private javax.swing.JLabel foodThumbnail5;
-    private javax.swing.JLabel foodThumbnail6;
-    private javax.swing.JLabel foodThumbnail7;
-    private javax.swing.JLabel foodThumbnail8;
-    private javax.swing.JLabel foodThumbnail9;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane10;
-    private javax.swing.JScrollPane jScrollPane11;
-    private javax.swing.JScrollPane jScrollPane12;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JScrollPane jScrollPane6;
-    private javax.swing.JScrollPane jScrollPane7;
-    private javax.swing.JScrollPane jScrollPane8;
-    private javax.swing.JScrollPane jScrollPane9;
-    private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextArea jTextArea10;
-    private javax.swing.JTextArea jTextArea11;
-    private javax.swing.JTextArea jTextArea3;
-    private javax.swing.JTextArea jTextArea5;
-    private javax.swing.JTextArea jTextArea6;
-    private javax.swing.JTextArea jTextArea7;
-    private javax.swing.JTextArea jTextArea8;
-    private javax.swing.JTextArea jTextArea9;
     private javax.swing.JTextField jTextField1;
     public javax.swing.JLabel userIcon;
     // End of variables declaration//GEN-END:variables

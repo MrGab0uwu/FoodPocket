@@ -39,7 +39,7 @@ public class loading extends javax.swing.JFrame {
         setLocationRelativeTo(this);
         setResizable(false);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        Timer t = new Timer(3000, new ActionListener() {
+        Timer t = new Timer(1000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 UserView user = new UserView();
