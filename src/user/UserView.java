@@ -1,15 +1,17 @@
 package user;
 
+import java.awt.Color;
 import java.sql.*;
+import utilities.JLabelImage;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
-import utilities.ScaleImage;
 
 /**
  *
@@ -20,27 +22,21 @@ public class UserView extends javax.swing.JFrame {
     /**
      * Creates new form user_view
      */
-    public static final String URL = "jdbc:mysql://localhost:3306/Recetario";
-    public static final String USERNAME = "root";
-    public static final String PASSWORD = "aex1lol";
+//    public static final String URL = "jdbc:mysql://localhost:3306/Recetario";
+//    public static final String USERNAME = "root";
+//    public static final String PASSWORD = "aex1lol";
+//    public static final String TABLE = "Receta";
+    
+    public static final String URL = "jdbc:mysql://umnqe1rhxbqzp495:fNahspd0GszlNeUQ8rUl@bdaznyk3nel9iufytkit-mysql.services.clever-cloud.com:3306/bdaznyk3nel9iufytkit";
+    public static final String USERNAME = "umnqe1rhxbqzp495";
+    public static final String PASSWORD = "fNahspd0GszlNeUQ8rUl";
+    public static final String TABLE = "Receta";
+
     static Connection conn = null;
-
-    public void resizeImages() {
-        ScaleImage resize = new ScaleImage();
-        // Boton Hamburguesa para las opciones
-        String burgerButton, userIcon, foodThumbnail;
-        burgerButton = "/media/burger_button.png";
-        userIcon = "/media/guest.png";
-        foodThumbnail = "/media/burger.jpg";
-
-        resize.scaleImage(burgerButton, this.burgerButton);
-        resize.scaleImage(userIcon, this.userIcon);
-        //resize.scaleImage(foodThumbnail, this.foodThumbnail);
-    }
 
     public void showRecipes() {
         /*
-        260, 240 Tamaño fijo,   40px de distancia   
+        260, 240 Tamaño fijo,   40px de distancia
         1.-  60-320, 140
          */
         int x = 60;
@@ -56,25 +52,30 @@ public class UserView extends javax.swing.JFrame {
             res = ps.executeQuery();
 
             while (res.next()) {
-                
-                JPanel foodCard1 = new JPanel();
-                JLabel foodThumbnail1 = new JLabel();
 
-                foodCard1.setBackground(new java.awt.Color(200, 200, 200));
-                foodThumbnail1.setText(res.getString("id") + " " + res.getString("nombre") + " " + res.getString("categoria"));
-                foodCard1.add(foodThumbnail1);
-                //  x    y
+                JPanel foodCard1 = new JPanel();
+                JLabel ICON_FOOD = new JLabel();
+                JLabel LABEL_FOOD = new JLabel();
+
+                foodCard1.setBackground(new java.awt.Color(255, 255, 255));
+                LABEL_FOOD.setText(res.getString("nombre"));
+                ICON_FOOD.setSize(250, 180);
+
+                foodCard1.add(ICON_FOOD);
+                foodCard1.add(LABEL_FOOD);
                 foodCard1.setBounds(x, y, 260, 240);
 
+                String ICON_URL = res.getString("url_imagen");
+                JLabelImage icon = new JLabelImage(ICON_URL, ICON_FOOD);
                 Body.add(foodCard1);
                 invalidate();
                 validate();
                 repaint();
 
-                if(i%3 == 0){
-                    y+= 270;
+                if (i % 3 == 0) {
+                    y += 270;
                     x = 60;
-                }else{
+                } else {
                     x += 290;
                 }
                 i++;
@@ -96,7 +97,6 @@ public class UserView extends javax.swing.JFrame {
         initComponents();
         setLocationRelativeTo(this);
         setResizable(false);
-        resizeImages();
         showRecipes();
     }
 
