@@ -4,6 +4,7 @@
  */
 package user;
 
+import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import utilities.ScaleImage;
 
@@ -34,6 +35,7 @@ public class FoodView extends javax.swing.JFrame {
         setLocationRelativeTo(this);
         setResizable(false);
         resizeImages();
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
 
     /**

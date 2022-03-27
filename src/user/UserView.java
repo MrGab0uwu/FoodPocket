@@ -1,17 +1,21 @@
 package user;
-
 import java.awt.Color;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.*;
+import java.util.LinkedList;
 import utilities.JLabelImage;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
+import mysql.MysqlConnection;
 
 /**
  *
@@ -22,77 +26,7 @@ public class UserView extends javax.swing.JFrame {
     /**
      * Creates new form user_view
      */
-//    public static final String URL = "jdbc:mysql://localhost:3306/Recetario";
-//    public static final String USERNAME = "root";
-//    public static final String PASSWORD = "aex1lol";
-//    public static final String TABLE = "Receta";
     
-    public static final String URL = "jdbc:mysql://umnqe1rhxbqzp495:fNahspd0GszlNeUQ8rUl@bdaznyk3nel9iufytkit-mysql.services.clever-cloud.com:3306/bdaznyk3nel9iufytkit";
-    public static final String USERNAME = "umnqe1rhxbqzp495";
-    public static final String PASSWORD = "fNahspd0GszlNeUQ8rUl";
-    public static final String TABLE = "Receta";
-
-    static Connection conn = null;
-
-    public void showRecipes() {
-        /*
-        260, 240 Tamaño fijo,   40px de distancia
-        1.-  60-320, 140
-         */
-        int x = 60;
-        int y = 140;
-        int i = 1;
-
-        try {
-            conn = getConection();
-
-            PreparedStatement ps;
-            ResultSet res;
-            ps = conn.prepareStatement("SELECT * FROM Receta");
-            res = ps.executeQuery();
-
-            while (res.next()) {
-
-                JPanel foodCard1 = new JPanel();
-                JLabel ICON_FOOD = new JLabel();
-                JLabel LABEL_FOOD = new JLabel();
-
-                foodCard1.setBackground(new java.awt.Color(255, 255, 255));
-                LABEL_FOOD.setText(res.getString("nombre"));
-                ICON_FOOD.setSize(250, 180);
-
-                foodCard1.add(ICON_FOOD);
-                foodCard1.add(LABEL_FOOD);
-                foodCard1.setBounds(x, y, 260, 240);
-
-                String ICON_URL = res.getString("url_imagen");
-                JLabelImage icon = new JLabelImage(ICON_URL, ICON_FOOD);
-                Body.add(foodCard1);
-                invalidate();
-                validate();
-                repaint();
-
-                if (i % 3 == 0) {
-                    y += 270;
-                    x = 60;
-                } else {
-                    x += 290;
-                }
-                i++;
-
-//                FoodView food = new FoodView();
-//                food.setVisible(true);
-//                dispose();
-                //JOptionPane.showMessageDialog(null, res.getString("id")+ " "+res.getString("nombre")+ " "+res.getString("categoria"));
-            } //else {
-//                JOptionPane.showMessageDialog(null, "No existen datos");
-//            }
-
-        } catch (SQLException ex) {
-            Logger.getLogger(UserView.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
     public UserView() {
         initComponents();
         setLocationRelativeTo(this);
@@ -176,21 +110,6 @@ public class UserView extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    public static Connection getConection() {
-        // Objeto para la conexion
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = (Connection) DriverManager.getConnection(URL, USERNAME, PASSWORD);
-            //JOptionPane.showMessageDialog(null, "Conexión exitosa");
-
-        } catch (ClassNotFoundException e) {
-            System.out.println("Ocurre una ClassNotFoundException: " + e.getMessage());
-        } catch (SQLException e) {
-            System.out.println("Ocurre una SQLException: " + e.getMessage());
-        }
-        return conn;
-    }
-
     /**
      * @param args the command line arguments
      */
@@ -226,6 +145,89 @@ public class UserView extends javax.swing.JFrame {
             }
         });
     }
+
+    public void showRecipes() {
+        MysqlConnection conexcion = new MysqlConnection();
+        Connection conn = conexcion.getConection();
+        /*
+        260, 240 Tamaño fijo,   40px de distancia
+        1.-  60-320, 140
+         */
+        int x = 60;
+        int y = 140;
+        int i = 1;
+
+        try {
+
+            PreparedStatement ps;
+            ResultSet res;
+            ps = conn.prepareStatement("SELECT * FROM Receta");
+            res = ps.executeQuery();
+
+            while (res.next()) {
+
+                JPanel foodCard = new JPanel();
+                JLabel ICON_FOOD = new JLabel();
+                JLabel LABEL_FOOD = new JLabel();
+                JComponent[] card = {foodCard, ICON_FOOD, LABEL_FOOD};
+                
+//                     descripcion = res.getString("nombre");
+//                ingredientes = res.getString("nombre");
+//                pasos = res.getString("nombre");
+
+                foodCard.setBackground(new java.awt.Color(255, 255, 255));
+                LABEL_FOOD.setText(res.getString("nombre"));
+                LABEL_FOOD.setName(res.getString("id"));
+                ICON_FOOD.setName(res.getString("id"));
+                foodCard.setName(res.getString("id"));
+                ICON_FOOD.setSize(250, 180);
+
+                foodCard.add(ICON_FOOD);
+                foodCard.add(LABEL_FOOD);
+                foodCard.setBounds(x, y, 260, 240);
+
+                for (JComponent c : card) {
+                    c.addMouseListener(new MouseAdapter() {
+                        
+                        int id = Integer.parseInt(res.getString("id"));
+                        
+                        @Override
+                        public void mouseClicked(MouseEvent e) {
+                            FoodTemplate view = new FoodTemplate();
+                            view.setVisible(true);
+                            view.setData(conn, id);
+                        }
+                    });
+                }
+
+                String ICON_URL = res.getString("url_imagen");
+                JLabelImage icon = new JLabelImage(ICON_URL, ICON_FOOD);
+                Body.add(foodCard);
+                invalidate();
+                validate();
+                repaint();
+
+                if (i % 3 == 0) {
+                    y += 270;
+                    x = 60;
+                } else {
+                    x += 290;
+                }
+                i++;
+
+//                FoodView food = new FoodView();
+//                food.setVisible(true);
+//                dispose();
+                //JOptionPane.showMessageDialog(null, res.getString("id")+ " "+res.getString("nombre")+ " "+res.getString("categoria"));
+            } //else {
+//                JOptionPane.showMessageDialog(null, "No existen datos");
+//            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(UserView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel Body;

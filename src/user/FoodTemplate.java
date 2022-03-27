@@ -4,7 +4,18 @@
  */
 package user;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import utilities.JLabelImage;
 import utilities.ScaleImage;
 
 /**
@@ -16,24 +27,42 @@ public class FoodTemplate extends javax.swing.JFrame {
     /**
      * Creates new form FoodTemplate
      */
-    public void resizeImages() {
-        ScaleImage resize = new ScaleImage();
-        // Boton Hamburguesa para las opciones
-        String burgerButton, userIcon, burger;
-        burgerButton = "/media/burger_button.png";
-        userIcon = "/media/guest.png";
-        burger = "/media/burger.jpg";
-
-        resize.scaleImage(burgerButton, this.burgerButton);
-        resize.scaleImage(userIcon, this.userIcon);
-        resize.scaleImage(burger, this.foodImage);
-    }
 
     public FoodTemplate() {
         initComponents();
         setLocationRelativeTo(this);
         setResizable(false);
-        resizeImages();
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+    }
+
+    public void setData(Connection conn, int id) {
+        PreparedStatement ps;
+        ResultSet res;
+
+        try {
+            ps = conn.prepareStatement("SELECT * FROM Receta where id = "+id);
+            System.out.println(ps);
+            res = ps.executeQuery();
+
+            if (res.next()) {
+                String ICON_URL = res.getString("url_imagen");
+                
+                jLabel1.setText(res.getString("nombre"));
+                jTextArea2.setText(res.getString("ingredientes"));
+                jTextArea3.setText(res.getString("descripcion"));
+                
+                JLabelImage icon = new JLabelImage(ICON_URL, foodImage);
+            } else {
+                System.out.println("XD NO");
+            }
+
+            invalidate();
+            validate();
+            repaint();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(FoodTemplate.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -57,9 +86,9 @@ public class FoodTemplate extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
         jLabel4 = new javax.swing.JLabel();
-        jScrollPane3 = new javax.swing.JScrollPane();
+        jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea2 = new javax.swing.JTextArea();
-        jScrollPane4 = new javax.swing.JScrollPane();
+        jScrollPane3 = new javax.swing.JScrollPane();
         jTextArea3 = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -108,7 +137,7 @@ public class FoodTemplate extends javax.swing.JFrame {
 
         jLabel1.setFont(new java.awt.Font("Open Sauce Sans", 1, 36)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(35, 61, 76));
-        jLabel1.setText("HAMBURGER ");
+        jLabel1.setText("Titulo");
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -127,20 +156,21 @@ public class FoodTemplate extends javax.swing.JFrame {
         jTextArea2.setColumns(20);
         jTextArea2.setFont(new java.awt.Font("Open Sauce Sans", 0, 14)); // NOI18N
         jTextArea2.setForeground(new java.awt.Color(51, 51, 51));
+        jTextArea2.setLineWrap(true);
         jTextArea2.setRows(5);
-        jTextArea2.setText("1.\n2.\n3.\n4.\n5.");
-        jTextArea2.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        jScrollPane3.setViewportView(jTextArea2);
+        jTextArea2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255)));
+        jScrollPane2.setViewportView(jTextArea2);
 
         jTextArea3.setEditable(false);
         jTextArea3.setBackground(new java.awt.Color(255, 255, 255));
         jTextArea3.setColumns(20);
         jTextArea3.setFont(new java.awt.Font("Open Sauce Sans", 0, 14)); // NOI18N
         jTextArea3.setForeground(new java.awt.Color(51, 51, 51));
+        jTextArea3.setLineWrap(true);
         jTextArea3.setRows(5);
-        jTextArea3.setText("1.\n2.\n3.\n4.\n5.");
-        jTextArea3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255)));
-        jScrollPane4.setViewportView(jTextArea3);
+        jTextArea3.setText("\n");
+        jTextArea3.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        jScrollPane3.setViewportView(jTextArea3);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -150,7 +180,7 @@ public class FoodTemplate extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(54, 54, 54)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3)
                     .addComponent(jLabel4)
@@ -163,8 +193,8 @@ public class FoodTemplate extends javax.swing.JFrame {
                 .addComponent(foodImage, javax.swing.GroupLayout.DEFAULT_SIZE, 282, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -180,23 +210,23 @@ public class FoodTemplate extends javax.swing.JFrame {
             BodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(Header, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, BodyLayout.createSequentialGroup()
-                .addContainerGap(205, Short.MAX_VALUE)
+                .addContainerGap(199, Short.MAX_VALUE)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(164, 164, 164))
             .addGroup(BodyLayout.createSequentialGroup()
                 .addGap(167, 167, 167)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 278, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 664, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         BodyLayout.setVerticalGroup(
             BodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(BodyLayout.createSequentialGroup()
                 .addComponent(Header, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(29, 29, 29)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(14, 14, 14)
+                .addComponent(jLabel1)
                 .addGap(33, 33, 33)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(29, Short.MAX_VALUE))
+                .addContainerGap(35, Short.MAX_VALUE))
         );
 
         jScrollPane1.setViewportView(Body);
@@ -259,8 +289,8 @@ public class FoodTemplate extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextArea jTextArea2;
     private javax.swing.JTextArea jTextArea3;
@@ -268,4 +298,3 @@ public class FoodTemplate extends javax.swing.JFrame {
     public javax.swing.JLabel userIcon;
     // End of variables declaration//GEN-END:variables
 }
-
