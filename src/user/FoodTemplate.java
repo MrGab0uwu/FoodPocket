@@ -22,35 +22,48 @@ import utilities.ScaleImage;
  *
  * @author gab-uwu
  */
-public class FoodTemplate extends javax.swing.JFrame {
+public class FoodTemplate extends javax.swing.JFrame implements Runnable {
 
     /**
      * Creates new form FoodTemplate
      */
-
-    public FoodTemplate() {
+    
+    Connection conn;
+    int id;
+    
+    @Override
+    public void run() {
         initComponents();
         setLocationRelativeTo(this);
         setResizable(false);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setData();
     }
 
-    public void setData(Connection conn, int id) {
+    public FoodTemplate() {
+    }
+    
+    public FoodTemplate(Connection conn, int id) {
+        this.conn = conn;
+        this.id = id;
+    }
+
+    public void setData() {
         PreparedStatement ps;
         ResultSet res;
 
         try {
-            ps = conn.prepareStatement("SELECT * FROM Receta where id = "+id);
+            ps = conn.prepareStatement("SELECT * FROM Receta where id = " + id);
             System.out.println(ps);
             res = ps.executeQuery();
 
             if (res.next()) {
                 String ICON_URL = res.getString("url_imagen");
-                
+
                 jLabel1.setText(res.getString("nombre"));
                 jTextArea2.setText(res.getString("ingredientes"));
-                jTextArea3.setText(res.getString("descripcion"));
-                
+                jTextArea3.setText(res.getString("procedimiento"));
+
                 JLabelImage icon = new JLabelImage(ICON_URL, foodImage);
             } else {
                 System.out.println("XD NO");

@@ -1,37 +1,34 @@
 package user;
-import java.awt.Color;
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.*;
-import java.util.LinkedList;
 import utilities.JLabelImage;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.BorderFactory;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
 import mysql.MysqlConnection;
 
-/**
- *
- * @author gab-uwu
- */
-public class UserView extends javax.swing.JFrame {
+public class UserView extends javax.swing.JFrame implements Runnable{
 
     /**
      * Creates new form user_view
      */
     
-    public UserView() {
+    @Override
+    public void run(){
         initComponents();
         setLocationRelativeTo(this);
         setResizable(false);
         showRecipes();
+        setVisible(true);
+    }
+    
+    public UserView() {
     }
 
     /**
@@ -170,10 +167,6 @@ public class UserView extends javax.swing.JFrame {
                 JLabel ICON_FOOD = new JLabel();
                 JLabel LABEL_FOOD = new JLabel();
                 JComponent[] card = {foodCard, ICON_FOOD, LABEL_FOOD};
-                
-//                     descripcion = res.getString("nombre");
-//                ingredientes = res.getString("nombre");
-//                pasos = res.getString("nombre");
 
                 foodCard.setBackground(new java.awt.Color(255, 255, 255));
                 LABEL_FOOD.setText(res.getString("nombre"));
@@ -188,14 +181,20 @@ public class UserView extends javax.swing.JFrame {
 
                 for (JComponent c : card) {
                     c.addMouseListener(new MouseAdapter() {
-                        
+
                         int id = Integer.parseInt(res.getString("id"));
-                        
+
                         @Override
                         public void mouseClicked(MouseEvent e) {
-                            FoodTemplate view = new FoodTemplate();
+                            FoodTemplate view = new FoodTemplate(conn, id);
+                            Thread hilo = new Thread(view);
+                            hilo.start();
+                            try {
+                                hilo.join();
+                            } catch (InterruptedException ex) {
+                                Logger.getLogger(UserView.class.getName()).log(Level.SEVERE, null, ex);
+                            }
                             view.setVisible(true);
-                            view.setData(conn, id);
                         }
                     });
                 }
@@ -214,14 +213,7 @@ public class UserView extends javax.swing.JFrame {
                     x += 290;
                 }
                 i++;
-
-//                FoodView food = new FoodView();
-//                food.setVisible(true);
-//                dispose();
-                //JOptionPane.showMessageDialog(null, res.getString("id")+ " "+res.getString("nombre")+ " "+res.getString("categoria"));
-            } //else {
-//                JOptionPane.showMessageDialog(null, "No existen datos");
-//            }
+            }
 
         } catch (SQLException ex) {
             Logger.getLogger(UserView.class.getName()).log(Level.SEVERE, null, ex);

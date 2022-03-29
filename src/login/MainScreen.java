@@ -1,46 +1,38 @@
 package login;
 
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.ImageIcon;
+import static java.lang.Thread.sleep;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 import user.UserView;
 import utilities.ScaleImage;
 
-public class loading extends javax.swing.JFrame {
+public class MainScreen extends javax.swing.JFrame {
 
     /**
      * Creates new form LandingPage
      */
-//    public void resizeImages() {
-//        // Boton Hamburguesa para las opciones
-//        String gif;
-//        gif = "/media/loading-gif-png-5.gif";
-//
-//        ImageIcon icon = new ImageIcon(getClass().getResource(gif));
-//        // Reescalar la imagen usando la clase Image
-//        Image img = icon.getImage();
-//        Image imgScale = img.getScaledInstance(jLabel3.getWidth(), jLabel3.getHeight(), Image.SCALE_DEFAULT);
-//        ImageIcon scaledIcon = new ImageIcon(imgScale);
-//        jLabel3.setIcon(scaledIcon);
-//    }
-    public loading() {
+    public MainScreen() {
         initComponents();
         setLocationRelativeTo(this);
         setResizable(false);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
         Timer t = new Timer(1000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                UserView user = new UserView();
-                user.setVisible(true);
+                Login login = new Login();
+                Thread hilo = new Thread(login);
+                hilo.start();
                 dispose();
             }
         });
         t.setRepeats(false);
         t.start();
+
     }
 
     /**
@@ -112,21 +104,23 @@ public class loading extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(loading.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MainScreen.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(loading.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MainScreen.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(loading.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MainScreen.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(loading.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(MainScreen.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new loading().setVisible(true);
+                new MainScreen().setVisible(true);
             }
         });
     }

@@ -1,6 +1,10 @@
 package login;
 
 import java.awt.Color;
+import static java.lang.Thread.sleep;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import user.UserView;
 import utilities.JLabelImage;
 import utilities.TextPrompt;
 
@@ -8,25 +12,33 @@ import utilities.TextPrompt;
  *
  * @author gab-uwu
  */
-public class Login extends javax.swing.JFrame {
+public class Login extends javax.swing.JFrame implements Runnable {
 
     /**
      * Creates new form Login
      */
-    
-    public void promt(){
+    public void promt() {
         TextPrompt placeholder = new TextPrompt("Ingrese su nombre de usuario", userField);
         TextPrompt placeholder2 = new TextPrompt("******", passwordField);
         placeholder.changeAlpha(0.75f);
         placeholder2.changeAlpha(0.75f);
     }
-    
-    
-    public Login() {
+
+    @Override
+    public void run() {
+        try {
+            sleep(3000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+        }
         initComponents();
-        JLabelImage avatar = new JLabelImage("/media/avatar.png",Avatar);
+        JLabelImage avatar = new JLabelImage("/media/avatar.png", Avatar);
         setLocationRelativeTo(this);
         setResizable(false);
+        setVisible(true);
+    }
+
+    public Login() {
     }
 
     /**
@@ -232,10 +244,10 @@ public class Login extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void BLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BLoginActionPerformed
-      
-        loading load = new loading();
-        load.setVisible(true);
-        dispose();
+        UserView home = new UserView();
+        Thread hiloHome = new Thread(home);
+        this.dispose();
+        hiloHome.start();
     }//GEN-LAST:event_BLoginActionPerformed
 
     private void userFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userFieldActionPerformed
