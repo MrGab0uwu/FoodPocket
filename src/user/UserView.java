@@ -2,10 +2,14 @@ package user;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.*;
 import utilities.JLabelImage;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -13,21 +17,23 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import mysql.MysqlConnection;
 
-public class UserView extends javax.swing.JFrame implements Runnable{
+public class UserView extends javax.swing.JFrame implements Runnable {
 
     /**
      * Creates new form user_view
      */
-    
+    MysqlConnection conexcion = new MysqlConnection();
+    Connection conn = conexcion.getConection();
+
     @Override
-    public void run(){
+    public void run() {
         initComponents();
         setLocationRelativeTo(this);
         setResizable(false);
         showRecipes();
         setVisible(true);
     }
-    
+
     public UserView() {
     }
 
@@ -40,72 +46,116 @@ public class UserView extends javax.swing.JFrame implements Runnable{
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        Header = new javax.swing.JPanel();
+        searchBar = new javax.swing.JTextField();
+        btnAdd = new javax.swing.JButton();
+        btnExit = new javax.swing.JButton();
+        btnSearch = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         Body = new javax.swing.JPanel();
-        Header = new javax.swing.JPanel();
-        jTextField1 = new javax.swing.JTextField();
-        burgerButton = new javax.swing.JLabel();
-        userIcon = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jScrollPane1.setBackground(new java.awt.Color(230, 230, 230));
-        jScrollPane1.setBorder(null);
-
-        Body.setBackground(new java.awt.Color(230, 230, 230));
-
         Header.setBackground(new java.awt.Color(230, 230, 230));
 
-        jTextField1.setBackground(new java.awt.Color(35, 61, 76));
-        jTextField1.setForeground(new java.awt.Color(255, 255, 255));
+        searchBar.setBackground(new java.awt.Color(35, 61, 76));
+        searchBar.setForeground(new java.awt.Color(255, 255, 255));
 
-        burgerButton.setBackground(new java.awt.Color(255, 102, 102));
+        btnAdd.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
+        btnAdd.setText("+");
+        btnAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddActionPerformed(evt);
+            }
+        });
+
+        btnExit.setBackground(new java.awt.Color(255, 0, 0));
+        btnExit.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
+        btnExit.setForeground(new java.awt.Color(255, 255, 255));
+        btnExit.setText("X");
+        btnExit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExitActionPerformed(evt);
+            }
+        });
+
+        btnSearch.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        btnSearch.setText("Buscar");
+        btnSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSearchActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout HeaderLayout = new javax.swing.GroupLayout(Header);
         Header.setLayout(HeaderLayout);
         HeaderLayout.setHorizontalGroup(
             HeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(HeaderLayout.createSequentialGroup()
-                .addGap(63, 63, 63)
-                .addComponent(burgerButton, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 58, Short.MAX_VALUE)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 632, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(58, 58, 58)
-                .addComponent(userIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(63, 63, 63))
+                .addGap(41, 41, 41)
+                .addComponent(btnExit, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 71, Short.MAX_VALUE)
+                .addComponent(searchBar, javax.swing.GroupLayout.PREFERRED_SIZE, 552, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btnSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(28, 28, 28)
+                .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(36, 36, 36))
         );
         HeaderLayout.setVerticalGroup(
             HeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(HeaderLayout.createSequentialGroup()
-                .addGap(24, 24, 24)
-                .addGroup(HeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(userIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(burgerButton, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addGap(15, 15, 15)
+                .addGroup(HeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(HeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(searchBar, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnExit, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(34, Short.MAX_VALUE))
         );
+
+        getContentPane().add(Header, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 960, -1));
+
+        jScrollPane1.setBackground(new java.awt.Color(230, 230, 230));
+        jScrollPane1.setBorder(null);
+
+        Body.setBackground(new java.awt.Color(230, 230, 230));
 
         javax.swing.GroupLayout BodyLayout = new javax.swing.GroupLayout(Body);
         Body.setLayout(BodyLayout);
         BodyLayout.setHorizontalGroup(
             BodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(Header, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGap(0, 957, Short.MAX_VALUE)
         );
         BodyLayout.setVerticalGroup(
             BodyLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(BodyLayout.createSequentialGroup()
-                .addComponent(Header, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(857, Short.MAX_VALUE))
+            .addGap(0, 956, Short.MAX_VALUE)
         );
 
         jScrollPane1.setViewportView(Body);
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 970, 540));
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 90, 970, 450));
         jScrollPane1.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+        UploadForm upload = new UploadForm();
+        upload.setVisible(true);
+    }//GEN-LAST:event_btnAddActionPerformed
+
+    private void btnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitActionPerformed
+        this.dispose();
+        System.exit(0);
+    }//GEN-LAST:event_btnExitActionPerformed
+
+    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
+        String receta = searchBar.getText();
+        searchRecipies(receta);
+    }//GEN-LAST:event_btnSearchActionPerformed
 
     /**
      * @param args the command line arguments
@@ -144,16 +194,6 @@ public class UserView extends javax.swing.JFrame implements Runnable{
     }
 
     public void showRecipes() {
-        MysqlConnection conexcion = new MysqlConnection();
-        Connection conn = conexcion.getConection();
-        /*
-        260, 240 Tamaño fijo,   40px de distancia
-        1.-  60-320, 140
-         */
-        int x = 60;
-        int y = 140;
-        int i = 1;
-
         try {
 
             PreparedStatement ps;
@@ -161,19 +201,61 @@ public class UserView extends javax.swing.JFrame implements Runnable{
             ps = conn.prepareStatement("SELECT * FROM Receta");
             res = ps.executeQuery();
 
-            while (res.next()) {
+            renderRecipies(res);
 
+        } catch (SQLException ex) {
+            Logger.getLogger(UserView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void searchRecipies(String recipie) {
+        Body.removeAll();
+
+        try {
+
+            PreparedStatement ps;
+            ResultSet res;
+            ps = conn.prepareStatement("SELECT * FROM Receta WHERE nombre = '" + recipie + "'");
+            res = ps.executeQuery();
+
+            renderRecipies(res);
+
+        } catch (SQLException ex) {
+            Logger.getLogger(UserView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void renderRecipies(ResultSet res) throws SQLException {
+        int x = 60;
+        int y = 30;
+        int i = 1;
+        if (!res.next()) {
+            JOptionPane.showMessageDialog(null, "No se encontraron coincidencias");
+        } else {
+            do {
                 JPanel foodCard = new JPanel();
                 JLabel ICON_FOOD = new JLabel();
                 JLabel LABEL_FOOD = new JLabel();
                 JComponent[] card = {foodCard, ICON_FOOD, LABEL_FOOD};
+                try {
+                    BufferedImage buffimg = null;
+                    byte[] image = null;
+                    image = res.getBytes("url_imagen");
+                    // Lee la imagen como InputStream
+                    InputStream img = res.getBinaryStream(6);
+                    buffimg = ImageIO.read(img);
+                    JLabelImage icon = new JLabelImage();
+                    ICON_FOOD.setSize(250, 180);
+                    icon.scalelImageMysql(buffimg, ICON_FOOD);
+                } catch (IOException ex) {
+                    Logger.getLogger(UserView.class.getName()).log(Level.SEVERE, null, ex);
+                }
 
                 foodCard.setBackground(new java.awt.Color(255, 255, 255));
                 LABEL_FOOD.setText(res.getString("nombre"));
                 LABEL_FOOD.setName(res.getString("id"));
                 ICON_FOOD.setName(res.getString("id"));
                 foodCard.setName(res.getString("id"));
-                ICON_FOOD.setSize(250, 180);
 
                 foodCard.add(ICON_FOOD);
                 foodCard.add(LABEL_FOOD);
@@ -198,9 +280,6 @@ public class UserView extends javax.swing.JFrame implements Runnable{
                         }
                     });
                 }
-
-                String ICON_URL = res.getString("url_imagen");
-                JLabelImage icon = new JLabelImage(ICON_URL, ICON_FOOD);
                 Body.add(foodCard);
                 invalidate();
                 validate();
@@ -213,10 +292,7 @@ public class UserView extends javax.swing.JFrame implements Runnable{
                     x += 290;
                 }
                 i++;
-            }
-
-        } catch (SQLException ex) {
-            Logger.getLogger(UserView.class.getName()).log(Level.SEVERE, null, ex);
+            } while (res.next());
         }
     }
 
@@ -224,9 +300,10 @@ public class UserView extends javax.swing.JFrame implements Runnable{
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel Body;
     private javax.swing.JPanel Header;
-    public javax.swing.JLabel burgerButton;
+    private javax.swing.JButton btnAdd;
+    private javax.swing.JButton btnExit;
+    private javax.swing.JButton btnSearch;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField jTextField1;
-    public javax.swing.JLabel userIcon;
+    private javax.swing.JTextField searchBar;
     // End of variables declaration//GEN-END:variables
 }

@@ -21,7 +21,7 @@ public class MainScreen extends javax.swing.JFrame {
         setResizable(false);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        Timer t = new Timer(1000, new ActionListener() {
+        Timer t = new Timer(2000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Login login = new Login();

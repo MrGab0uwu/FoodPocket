@@ -32,7 +32,8 @@ public class Login extends javax.swing.JFrame implements Runnable {
             Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
         }
         initComponents();
-        JLabelImage avatar = new JLabelImage("/media/avatar.png", Avatar);
+        JLabelImage avatar = new JLabelImage();
+        avatar.scalelImage("/media/avatar.png", Avatar);
         setLocationRelativeTo(this);
         setResizable(false);
         setVisible(true);

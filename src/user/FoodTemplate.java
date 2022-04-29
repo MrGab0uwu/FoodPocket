@@ -37,7 +37,7 @@ public class FoodTemplate extends javax.swing.JFrame implements Runnable {
         setLocationRelativeTo(this);
         setResizable(false);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setData();
+       // setData();
     }
 
     public FoodTemplate() {
@@ -54,7 +54,6 @@ public class FoodTemplate extends javax.swing.JFrame implements Runnable {
 
         try {
             ps = conn.prepareStatement("SELECT * FROM Receta where id = " + id);
-            System.out.println(ps);
             res = ps.executeQuery();
 
             if (res.next()) {
@@ -64,9 +63,10 @@ public class FoodTemplate extends javax.swing.JFrame implements Runnable {
                 jTextArea2.setText(res.getString("ingredientes"));
                 jTextArea3.setText(res.getString("procedimiento"));
 
-                JLabelImage icon = new JLabelImage(ICON_URL, foodImage);
+                JLabelImage icon = new JLabelImage();
+               // icon.scalelImageMysql(ICON_URL, jLabel1);
             } else {
-                System.out.println("XD NO");
+                System.out.println("Error");
             }
 
             invalidate();
@@ -90,9 +90,8 @@ public class FoodTemplate extends javax.swing.JFrame implements Runnable {
         jScrollPane1 = new javax.swing.JScrollPane();
         Body = new javax.swing.JPanel();
         Header = new javax.swing.JPanel();
-        jTextField1 = new javax.swing.JTextField();
-        burgerButton = new javax.swing.JLabel();
-        userIcon = new javax.swing.JLabel();
+        btnBack = new javax.swing.JButton();
+        btnAdd = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         foodImage = new javax.swing.JLabel();
@@ -114,38 +113,41 @@ public class FoodTemplate extends javax.swing.JFrame implements Runnable {
 
         Header.setBackground(new java.awt.Color(230, 230, 230));
 
-        jTextField1.setBackground(new java.awt.Color(35, 61, 76));
-        jTextField1.setForeground(new java.awt.Color(255, 255, 255));
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        btnBack.setBackground(new java.awt.Color(255, 102, 0));
+        btnBack.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        btnBack.setForeground(new java.awt.Color(255, 255, 255));
+        btnBack.setText("Regresar");
+        btnBack.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                btnBackActionPerformed(evt);
             }
         });
 
-        burgerButton.setBackground(new java.awt.Color(255, 102, 102));
+        btnAdd.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
+        btnAdd.setText("+");
 
         javax.swing.GroupLayout HeaderLayout = new javax.swing.GroupLayout(Header);
         Header.setLayout(HeaderLayout);
         HeaderLayout.setHorizontalGroup(
             HeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(HeaderLayout.createSequentialGroup()
-                .addGap(63, 63, 63)
-                .addComponent(burgerButton, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 668, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(40, 40, 40)
-                .addComponent(userIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(63, 63, 63))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(704, 704, 704)
+                .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(56, 56, 56))
         );
         HeaderLayout.setVerticalGroup(
             HeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(HeaderLayout.createSequentialGroup()
-                .addGap(24, 24, 24)
                 .addGroup(HeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(userIcon, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(burgerButton, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(23, Short.MAX_VALUE))
+                    .addGroup(HeaderLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, HeaderLayout.createSequentialGroup()
+                        .addGap(27, 27, 27)
+                        .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(10, Short.MAX_VALUE))
         );
 
         jLabel1.setFont(new java.awt.Font("Open Sauce Sans", 1, 36)); // NOI18N
@@ -192,12 +194,12 @@ public class FoodTemplate extends javax.swing.JFrame implements Runnable {
             .addComponent(foodImage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(54, 54, 54)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel3)
                     .addComponent(jLabel4)
-                    .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 493, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 493, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2)
+                    .addComponent(jScrollPane3))
                 .addContainerGap(54, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -213,8 +215,8 @@ public class FoodTemplate extends javax.swing.JFrame implements Runnable {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(46, 46, 46))
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout BodyLayout = new javax.swing.GroupLayout(Body);
@@ -250,9 +252,9 @@ public class FoodTemplate extends javax.swing.JFrame implements Runnable {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_btnBackActionPerformed
 
     /**
      * @param args the command line arguments
@@ -295,7 +297,8 @@ public class FoodTemplate extends javax.swing.JFrame implements Runnable {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel Body;
     private javax.swing.JPanel Header;
-    public javax.swing.JLabel burgerButton;
+    private javax.swing.JButton btnAdd;
+    private javax.swing.JButton btnBack;
     private javax.swing.JLabel foodImage;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
@@ -307,7 +310,5 @@ public class FoodTemplate extends javax.swing.JFrame implements Runnable {
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextArea jTextArea2;
     private javax.swing.JTextArea jTextArea3;
-    private javax.swing.JTextField jTextField1;
-    public javax.swing.JLabel userIcon;
     // End of variables declaration//GEN-END:variables
 }
