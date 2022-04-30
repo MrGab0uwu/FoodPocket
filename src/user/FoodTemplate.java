@@ -1,15 +1,15 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package user;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -27,22 +27,21 @@ public class FoodTemplate extends javax.swing.JFrame implements Runnable {
     /**
      * Creates new form FoodTemplate
      */
-    
     Connection conn;
     int id;
-    
+
     @Override
     public void run() {
         initComponents();
         setLocationRelativeTo(this);
         setResizable(false);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-       // setData();
+        setData();
     }
 
     public FoodTemplate() {
     }
-    
+
     public FoodTemplate(Connection conn, int id) {
         this.conn = conn;
         this.id = id;
@@ -57,14 +56,19 @@ public class FoodTemplate extends javax.swing.JFrame implements Runnable {
             res = ps.executeQuery();
 
             if (res.next()) {
-                String ICON_URL = res.getString("url_imagen");
+
+                BufferedImage buffimg = null;
+                byte[] image = null;
+                image = res.getBytes("url_imagen");
+                // Lee la imagen como InputStream
+                InputStream img = res.getBinaryStream(5);
+                buffimg = ImageIO.read(img);
+                JLabelImage icon = new JLabelImage();
+                icon.scalelImageMysql(buffimg, foodImage);
 
                 jLabel1.setText(res.getString("nombre"));
                 jTextArea2.setText(res.getString("ingredientes"));
                 jTextArea3.setText(res.getString("procedimiento"));
-
-                JLabelImage icon = new JLabelImage();
-               // icon.scalelImageMysql(ICON_URL, jLabel1);
             } else {
                 System.out.println("Error");
             }
@@ -75,6 +79,8 @@ public class FoodTemplate extends javax.swing.JFrame implements Runnable {
 
         } catch (SQLException ex) {
             Logger.getLogger(FoodTemplate.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException er) {
+            Logger.getLogger(FoodTemplate.class.getName()).log(Level.SEVERE, null, er);
         }
     }
 
@@ -92,6 +98,8 @@ public class FoodTemplate extends javax.swing.JFrame implements Runnable {
         Header = new javax.swing.JPanel();
         btnBack = new javax.swing.JButton();
         btnAdd = new javax.swing.JButton();
+        btnUpdate = new javax.swing.JButton();
+        btnDelete1 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         foodImage = new javax.swing.JLabel();
@@ -126,28 +134,53 @@ public class FoodTemplate extends javax.swing.JFrame implements Runnable {
         btnAdd.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
         btnAdd.setText("+");
 
+        btnUpdate.setBackground(new java.awt.Color(255, 51, 51));
+        btnUpdate.setFont(new java.awt.Font("Open Sauce Sans", 1, 14)); // NOI18N
+        btnUpdate.setForeground(new java.awt.Color(255, 255, 255));
+        btnUpdate.setText("Editar receta");
+        btnUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUpdateActionPerformed(evt);
+            }
+        });
+
+        btnDelete1.setBackground(new java.awt.Color(255, 51, 51));
+        btnDelete1.setFont(new java.awt.Font("Open Sauce Sans", 1, 14)); // NOI18N
+        btnDelete1.setForeground(new java.awt.Color(255, 255, 255));
+        btnDelete1.setText("Eliminar receta");
+        btnDelete1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDelete1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout HeaderLayout = new javax.swing.GroupLayout(Header);
         Header.setLayout(HeaderLayout);
         HeaderLayout.setHorizontalGroup(
             HeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(HeaderLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(42, Short.MAX_VALUE)
                 .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(704, 704, 704)
+                .addGap(372, 372, 372)
                 .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(56, 56, 56))
+                .addGap(37, 37, 37)
+                .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(33, 33, 33)
+                .addComponent(btnDelete1, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(36, 36, 36))
         );
         HeaderLayout.setVerticalGroup(
             HeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(HeaderLayout.createSequentialGroup()
-                .addGroup(HeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(HeaderLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, HeaderLayout.createSequentialGroup()
-                        .addGap(27, 27, 27)
-                        .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(10, Short.MAX_VALUE))
+                .addGap(19, 19, 19)
+                .addGroup(HeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(HeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnDelete1, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(HeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
 
         jLabel1.setFont(new java.awt.Font("Open Sauce Sans", 1, 36)); // NOI18N
@@ -256,6 +289,31 @@ public class FoodTemplate extends javax.swing.JFrame implements Runnable {
         this.dispose();
     }//GEN-LAST:event_btnBackActionPerformed
 
+    private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
+        UpdateForm form = new UpdateForm(id);
+        form.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnUpdateActionPerformed
+
+    private void btnDelete1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDelete1ActionPerformed
+        PreparedStatement ps;
+        ResultSet res;
+
+        try {
+            int reply = JOptionPane.showConfirmDialog(null, "Seguro que deseas borrar la receta? Este cambio no se puede deshacer", "Borrar receta", JOptionPane.YES_NO_OPTION);
+            if (reply == JOptionPane.YES_OPTION) {
+                ps = conn.prepareStatement("DELETE FROM Receta WHERE id = ?");
+                ps.setInt(1, id);
+                ps.execute();
+                JOptionPane.showMessageDialog(null, "Registro eliminado con exito.");
+                dispose();
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(FoodTemplate.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnDelete1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -299,6 +357,8 @@ public class FoodTemplate extends javax.swing.JFrame implements Runnable {
     private javax.swing.JPanel Header;
     private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnBack;
+    private javax.swing.JButton btnDelete1;
+    private javax.swing.JButton btnUpdate;
     private javax.swing.JLabel foodImage;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;

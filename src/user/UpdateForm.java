@@ -1,15 +1,18 @@
-
 package user;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -25,7 +28,7 @@ import utilities.ScaleImage;
  *
  * @author gab-uwu
  */
-public class UploadForm extends javax.swing.JFrame {
+public class UpdateForm extends javax.swing.JFrame {
 
     /**
      * Creates new form FoodTemplate
@@ -33,12 +36,19 @@ public class UploadForm extends javax.swing.JFrame {
     MysqlConnection conexcion = new MysqlConnection();
     Connection conn = conexcion.getConection();
     File file = null;
+    int id;
 
-    public UploadForm() {
+    public UpdateForm(int id) {
         initComponents();
         setLocationRelativeTo(this);
         setResizable(false);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        this.id = id;
+        getData(id);
+    }
+
+    public UpdateForm() {
+
     }
 
     /**
@@ -55,11 +65,11 @@ public class UploadForm extends javax.swing.JFrame {
         Header = new javax.swing.JPanel();
         btnBack = new javax.swing.JButton();
         FieldTitle = new javax.swing.JTextField();
-        jPanel2 = new javax.swing.JPanel();
-        foodImagePreview = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
+        section = new javax.swing.JPanel();
+        foodImage = new javax.swing.JLabel();
+        Steps = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
-        jLabel4 = new javax.swing.JLabel();
+        Ingredients = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         FieldIngredients = new javax.swing.JTextArea();
         jScrollPane3 = new javax.swing.JScrollPane();
@@ -68,7 +78,7 @@ public class UploadForm extends javax.swing.JFrame {
         btnSave = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
         FieldDescription = new javax.swing.JTextArea();
-        jLabel5 = new javax.swing.JLabel();
+        Description = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -83,7 +93,7 @@ public class UploadForm extends javax.swing.JFrame {
         btnBack.setBackground(new java.awt.Color(255, 102, 0));
         btnBack.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         btnBack.setForeground(new java.awt.Color(255, 255, 255));
-        btnBack.setText("Regresar");
+        btnBack.setText("Cancelar");
         btnBack.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnBackActionPerformed(evt);
@@ -115,17 +125,17 @@ public class UploadForm extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+        section.setBackground(new java.awt.Color(255, 255, 255));
 
-        foodImagePreview.setBackground(new java.awt.Color(254, 127, 46));
+        foodImage.setBackground(new java.awt.Color(254, 127, 46));
 
-        jLabel3.setFont(new java.awt.Font("Open Sauce Sans", 1, 18)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel3.setText("Pasos");
+        Steps.setFont(new java.awt.Font("Open Sauce Sans", 1, 18)); // NOI18N
+        Steps.setForeground(new java.awt.Color(0, 0, 0));
+        Steps.setText("Pasos");
 
-        jLabel4.setFont(new java.awt.Font("Open Sauce Sans", 1, 18)); // NOI18N
-        jLabel4.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel4.setText("Ingredientes");
+        Ingredients.setFont(new java.awt.Font("Open Sauce Sans", 1, 18)); // NOI18N
+        Ingredients.setForeground(new java.awt.Color(0, 0, 0));
+        Ingredients.setText("Ingredientes");
 
         FieldIngredients.setBackground(new java.awt.Color(255, 255, 255));
         FieldIngredients.setColumns(20);
@@ -173,23 +183,23 @@ public class UploadForm extends javax.swing.JFrame {
         FieldDescription.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255)));
         jScrollPane4.setViewportView(FieldDescription);
 
-        jLabel5.setFont(new java.awt.Font("Open Sauce Sans", 1, 18)); // NOI18N
-        jLabel5.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel5.setText("Descripcion");
+        Description.setFont(new java.awt.Font("Open Sauce Sans", 1, 18)); // NOI18N
+        Description.setForeground(new java.awt.Color(0, 0, 0));
+        Description.setText("Descripcion");
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(foodImagePreview, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+        javax.swing.GroupLayout sectionLayout = new javax.swing.GroupLayout(section);
+        section.setLayout(sectionLayout);
+        sectionLayout.setHorizontalGroup(
+            sectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(foodImage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(sectionLayout.createSequentialGroup()
                 .addGap(54, 54, 54)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(sectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jLabel5)
-                        .addComponent(jLabel3)
-                        .addComponent(jLabel4)
+                    .addGroup(sectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(Description)
+                        .addComponent(Steps)
+                        .addComponent(Ingredients)
                         .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 493, Short.MAX_VALUE)
                         .addComponent(jScrollPane3)
                         .addComponent(jScrollPane2)
@@ -197,24 +207,24 @@ public class UploadForm extends javax.swing.JFrame {
                         .addComponent(jScrollPane4)))
                 .addContainerGap(54, Short.MAX_VALUE))
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(foodImagePreview, javax.swing.GroupLayout.PREFERRED_SIZE, 277, javax.swing.GroupLayout.PREFERRED_SIZE)
+        sectionLayout.setVerticalGroup(
+            sectionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(sectionLayout.createSequentialGroup()
+                .addComponent(foodImage, javax.swing.GroupLayout.PREFERRED_SIZE, 277, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btnImage, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jLabel5)
+                .addComponent(Description)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
-                .addComponent(jLabel4)
+                .addComponent(Ingredients)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel3)
+                .addComponent(Steps)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(28, 28, 28)
@@ -229,7 +239,7 @@ public class UploadForm extends javax.swing.JFrame {
             .addComponent(Header, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, BodyLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(section, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(158, 158, 158))
         );
         BodyLayout.setVerticalGroup(
@@ -237,7 +247,7 @@ public class UploadForm extends javax.swing.JFrame {
             .addGroup(BodyLayout.createSequentialGroup()
                 .addComponent(Header, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(section, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(19, Short.MAX_VALUE))
         );
 
@@ -254,7 +264,7 @@ public class UploadForm extends javax.swing.JFrame {
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        uploadData();
+        updateData();
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void btnImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImageActionPerformed
@@ -268,15 +278,45 @@ public class UploadForm extends javax.swing.JFrame {
             file = fc.getSelectedFile();
             String path = file.getAbsolutePath();
             JLabelImage image = new JLabelImage();
-            image.scalelImageExt(path, foodImagePreview);
+            image.scalelImageExt(path, foodImage);
         }
     }//GEN-LAST:event_btnImageActionPerformed
 
-    public void uploadData() {
+    public void getData(int id) {
+        try {
+
+            PreparedStatement ps;
+            ResultSet res;
+            ps = conn.prepareStatement("SELECT * FROM Receta WHERE id = " + id);
+            res = ps.executeQuery();
+            res.next();
+
+            BufferedImage buffimg = null;
+            byte[] image = null;
+            image = res.getBytes("url_imagen");
+            // Lee la imagen como InputStream
+            InputStream img = res.getBinaryStream(5);
+            buffimg = ImageIO.read(img);
+            JLabelImage icon = new JLabelImage();
+            icon.scalelImageMysql(buffimg, foodImage);
+
+            FieldTitle.setText(res.getString("nombre"));
+            FieldSteps.setText(res.getString("procedimiento"));
+            FieldDescription.setText(res.getString("descripcion"));
+            FieldIngredients.setText(res.getString("ingredientes"));
+
+        } catch (SQLException ex) {
+            System.out.println("muelto");
+        } catch (IOException er) {
+            Logger.getLogger(FoodTemplate.class.getName()).log(Level.SEVERE, null, er);
+        }
+    }
+
+    public void updateData() {
         try {
             FileInputStream fis = new FileInputStream(file);
             PreparedStatement ps;
-            String query = "INSERT INTO Receta (nombre,procedimiento,descripcion,ingredientes,url_imagen) VALUES (?,?,?,?,?)";
+            String query = "UPDATE Receta SET nombre = ?, procedimiento = ?, descripcion = ?, ingredientes = ?, url_imagen = ? WHERE ID = "+id;
             ps = conn.prepareStatement(query);
             ps.setString(1, FieldTitle.getText());
             ps.setString(2, FieldSteps.getText());
@@ -284,7 +324,20 @@ public class UploadForm extends javax.swing.JFrame {
             ps.setString(4, FieldIngredients.getText());
             ps.setBinaryStream(5, fis, (int) file.length());
             ps.execute();
-            JOptionPane.showMessageDialog(null, "Registro agregado con exito.");
+
+            JOptionPane.showMessageDialog(null, "Registro actualizado con exito.");
+
+            FoodTemplate view = new FoodTemplate(conn, id);
+            Thread hilo = new Thread(view);
+            hilo.start();
+            try {
+                hilo.join();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(UserView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            view.setVisible(true);
+            dispose();
+
         } catch (FileNotFoundException ex) {
             JOptionPane.showMessageDialog(null, "No se ha elegido una imagen para la receta");
         } catch (SQLException er) {
@@ -309,14 +362,22 @@ public class UploadForm extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(UploadForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(UpdateForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(UploadForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(UpdateForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(UploadForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(UpdateForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(UploadForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(UpdateForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
@@ -329,30 +390,30 @@ public class UploadForm extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new UploadForm().setVisible(true);
+                new UpdateForm().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel Body;
+    private javax.swing.JLabel Description;
     private javax.swing.JTextArea FieldDescription;
     private javax.swing.JTextArea FieldIngredients;
     private javax.swing.JTextArea FieldSteps;
     private javax.swing.JTextField FieldTitle;
     private javax.swing.JPanel Header;
+    private javax.swing.JLabel Ingredients;
+    private javax.swing.JLabel Steps;
     private javax.swing.JButton btnBack;
     private javax.swing.JButton btnImage;
     private javax.swing.JButton btnSave;
-    private javax.swing.JLabel foodImagePreview;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JPanel jPanel2;
+    private javax.swing.JLabel foodImage;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JPanel section;
     // End of variables declaration//GEN-END:variables
 }

@@ -15,6 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import mysql.MysqlConnection;
 
 public class UserView extends javax.swing.JFrame implements Runnable {
@@ -51,6 +52,7 @@ public class UserView extends javax.swing.JFrame implements Runnable {
         btnAdd = new javax.swing.JButton();
         btnExit = new javax.swing.JButton();
         btnSearch = new javax.swing.JButton();
+        btnAdd1 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         Body = new javax.swing.JPanel();
 
@@ -60,6 +62,7 @@ public class UserView extends javax.swing.JFrame implements Runnable {
         Header.setBackground(new java.awt.Color(230, 230, 230));
 
         searchBar.setBackground(new java.awt.Color(35, 61, 76));
+        searchBar.setFont(new java.awt.Font("Open Sauce Sans", 0, 14)); // NOI18N
         searchBar.setForeground(new java.awt.Color(255, 255, 255));
 
         btnAdd.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
@@ -88,6 +91,14 @@ public class UserView extends javax.swing.JFrame implements Runnable {
             }
         });
 
+        btnAdd1.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        btnAdd1.setText("Recargar");
+        btnAdd1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAdd1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout HeaderLayout = new javax.swing.GroupLayout(Header);
         Header.setLayout(HeaderLayout);
         HeaderLayout.setHorizontalGroup(
@@ -96,24 +107,31 @@ public class UserView extends javax.swing.JFrame implements Runnable {
                 .addGap(41, 41, 41)
                 .addComponent(btnExit, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 71, Short.MAX_VALUE)
-                .addComponent(searchBar, javax.swing.GroupLayout.PREFERRED_SIZE, 552, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(searchBar, javax.swing.GroupLayout.PREFERRED_SIZE, 440, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btnSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(28, 28, 28)
+                .addGap(18, 18, 18)
+                .addComponent(btnAdd1, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(36, 36, 36))
+                .addGap(42, 42, 42))
         );
         HeaderLayout.setVerticalGroup(
             HeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(HeaderLayout.createSequentialGroup()
-                .addGap(15, 15, 15)
                 .addGroup(HeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(HeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(searchBar, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(btnExit, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(34, Short.MAX_VALUE))
+                    .addGroup(HeaderLayout.createSequentialGroup()
+                        .addGap(7, 7, 7)
+                        .addGroup(HeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(HeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(searchBar, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnAdd1, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(btnExit, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(HeaderLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(46, Short.MAX_VALUE))
         );
 
         getContentPane().add(Header, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 960, -1));
@@ -157,6 +175,10 @@ public class UserView extends javax.swing.JFrame implements Runnable {
         searchRecipies(receta);
     }//GEN-LAST:event_btnSearchActionPerformed
 
+    private void btnAdd1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdd1ActionPerformed
+       showRecipes();
+    }//GEN-LAST:event_btnAdd1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -194,6 +216,7 @@ public class UserView extends javax.swing.JFrame implements Runnable {
     }
 
     public void showRecipes() {
+        Body.removeAll();
         try {
 
             PreparedStatement ps;
@@ -204,7 +227,7 @@ public class UserView extends javax.swing.JFrame implements Runnable {
             renderRecipies(res);
 
         } catch (SQLException ex) {
-            Logger.getLogger(UserView.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println(ex);
         }
     }
 
@@ -221,7 +244,7 @@ public class UserView extends javax.swing.JFrame implements Runnable {
             renderRecipies(res);
 
         } catch (SQLException ex) {
-            Logger.getLogger(UserView.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("muelto");
         }
     }
 
@@ -235,14 +258,15 @@ public class UserView extends javax.swing.JFrame implements Runnable {
             do {
                 JPanel foodCard = new JPanel();
                 JLabel ICON_FOOD = new JLabel();
-                JLabel LABEL_FOOD = new JLabel();
-                JComponent[] card = {foodCard, ICON_FOOD, LABEL_FOOD};
+                JLabel LABEL_NAME = new JLabel();
+                JTextArea LABEL_DESCRIPTION = new JTextArea(3,20);
+                JComponent[] card = {foodCard, ICON_FOOD, LABEL_NAME, LABEL_DESCRIPTION};
                 try {
                     BufferedImage buffimg = null;
                     byte[] image = null;
                     image = res.getBytes("url_imagen");
                     // Lee la imagen como InputStream
-                    InputStream img = res.getBinaryStream(6);
+                    InputStream img = res.getBinaryStream(5);
                     buffimg = ImageIO.read(img);
                     JLabelImage icon = new JLabelImage();
                     ICON_FOOD.setSize(250, 180);
@@ -252,14 +276,20 @@ public class UserView extends javax.swing.JFrame implements Runnable {
                 }
 
                 foodCard.setBackground(new java.awt.Color(255, 255, 255));
-                LABEL_FOOD.setText(res.getString("nombre"));
-                LABEL_FOOD.setName(res.getString("id"));
+                LABEL_NAME.setText(res.getString("nombre"));
+                LABEL_NAME.setName(res.getString("id"));
+                
+                LABEL_DESCRIPTION.setLineWrap(true);
+                LABEL_DESCRIPTION.setText(res.getString("descripcion"));
+                LABEL_DESCRIPTION.setName(res.getString("id"));
+                
                 ICON_FOOD.setName(res.getString("id"));
                 foodCard.setName(res.getString("id"));
 
                 foodCard.add(ICON_FOOD);
-                foodCard.add(LABEL_FOOD);
-                foodCard.setBounds(x, y, 260, 240);
+                foodCard.add(LABEL_NAME);
+                foodCard.add(LABEL_DESCRIPTION);
+                foodCard.setBounds(x, y, 260, 280);
 
                 for (JComponent c : card) {
                     c.addMouseListener(new MouseAdapter() {
@@ -286,7 +316,7 @@ public class UserView extends javax.swing.JFrame implements Runnable {
                 repaint();
 
                 if (i % 3 == 0) {
-                    y += 270;
+                    y += 290;
                     x = 60;
                 } else {
                     x += 290;
@@ -301,6 +331,7 @@ public class UserView extends javax.swing.JFrame implements Runnable {
     private javax.swing.JPanel Body;
     private javax.swing.JPanel Header;
     private javax.swing.JButton btnAdd;
+    private javax.swing.JButton btnAdd1;
     private javax.swing.JButton btnExit;
     private javax.swing.JButton btnSearch;
     private javax.swing.JScrollPane jScrollPane1;
